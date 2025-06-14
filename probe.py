@@ -2,7 +2,7 @@ import requests
 import time
 
 
-def probe_availability(date: str, venue_from: int, venue_to: int, target_time_range: str) -> bool:
+def probe_availability(date: str, venue_from: int, venue_to: int, target_time_range: str, session: requests.Session) -> bool:
     # ===== 请求设置 =====
     url = "https://ds-api.dong24.com/bais-client-v1/app/venue/sites/14285185605313/stocks"
     params = {
@@ -24,9 +24,11 @@ def probe_availability(date: str, venue_from: int, venue_to: int, target_time_ra
 
     try:
         # ===== 获取数据 =====
-        response = requests.get(url, params=params, headers=headers, timeout=5)
+        # stime = time.time()
+        response = session.get(url, params=params, headers=headers, timeout=5)
         response.raise_for_status()
         data = response.json()
+        # print(f"网络用时开销：{int((time.time() - stime) * 1000)}")
     except Exception as e:
         print(f"❌ 请求失败: {e}")
         return False
@@ -60,5 +62,6 @@ def probe_availability(date: str, venue_from: int, venue_to: int, target_time_ra
 
 
 if __name__ == "__main__":
-    result = probe_availability("2025-06-20", 2, 5, "19:00 - 20:00")
-    print(result)
+    with requests.Session() as session:
+        result = probe_availability("2025-06-20", 2, 5, "19:00 - 20:00", session)
+        print(result)

@@ -33,10 +33,10 @@ if __name__ == "__main__":
     # ==== 请求体 Payload ====
     payload = {
         "venueSiteItemNodes": [
-            {"itemId": cim['大馆2'], "startTime": "19:00", "endTime": "20:00", "groupType": 0},
-            {"itemId": cim['大馆3'], "startTime": "19:00", "endTime": "20:00", "groupType": 0},
-            {"itemId": cim['大馆4'], "startTime": "19:00", "endTime": "20:00", "groupType": 0},
-            {"itemId": cim['大馆5'], "startTime": "19:00", "endTime": "20:00", "groupType": 0},
+            {"itemId": cim['大馆2'], "startTime": "22:00", "endTime": "23:00", "groupType": 0},
+            {"itemId": cim['大馆3'], "startTime": "22:00", "endTime": "23:00", "groupType": 0},
+            {"itemId": cim['大馆4'], "startTime": "22:00", "endTime": "23:00", "groupType": 0},
+            {"itemId": cim['大馆5'], "startTime": "22:00", "endTime": "23:00", "groupType": 0},
         ],
         "date": book_date,
         "venueId": "",
@@ -62,15 +62,19 @@ if __name__ == "__main__":
     while datetime.now() < start_time:
         time.sleep(0.01)
 
+    # warm up
+    session = requests.Session()
+    probe_availability(book_date, 2, 5, "22:00 - 23:00", session)
+
     print("🔍 开始探测可预约状态...")
     while True:
-        found = probe_availability(book_date, 2, 5, "19:00 - 20:00")
+        found = probe_availability(book_date, 2, 5, "22:00 - 23:00", session)
         if found:
             print("🚀 开始发送 POST 请求，连续发送 20 次")
             for i in range(1, 21):
                 try:
                     send_time = time.time()
-                    response = requests.post(url, headers=headers, data=json.dumps(payload), timeout=10)
+                    response = session.post(url, headers=headers, data=json.dumps(payload), timeout=10)
                     elapsed = int((time.time() - send_time) * 1000)
                     status = response.status_code
 
