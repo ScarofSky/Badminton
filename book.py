@@ -19,8 +19,8 @@ if __name__ == "__main__":
     cim = load_court_id_map()
 
     # ==== 启动时间设置 ====
-    start_time_str = "2025-06-14 23:58:00"
-    book_date = "2025-06-21"
+    start_time_str = "2025-06-15 23:58:00"
+    book_date = "2025-06-22"
 
     stime = "19:00"
     etime = "20:00"
@@ -33,10 +33,10 @@ if __name__ == "__main__":
     # ==== 请求体 Payload ====
     payload = {
         "venueSiteItemNodes": [
-            {"itemId": cim['大馆2'], "startTime": "22:00", "endTime": "23:00", "groupType": 0},
-            {"itemId": cim['大馆3'], "startTime": "22:00", "endTime": "23:00", "groupType": 0},
-            {"itemId": cim['大馆4'], "startTime": "22:00", "endTime": "23:00", "groupType": 0},
-            {"itemId": cim['大馆5'], "startTime": "22:00", "endTime": "23:00", "groupType": 0},
+            {"itemId": cim['大馆2'], "startTime": "20:00", "endTime": "21:00", "groupType": 0},
+            {"itemId": cim['大馆3'], "startTime": "20:00", "endTime": "21:00", "groupType": 0},
+            {"itemId": cim['大馆2'], "startTime": "21:00", "endTime": "22:00", "groupType": 0},
+            {"itemId": cim['大馆3'], "startTime": "21:00", "endTime": "22:00", "groupType": 0},
         ],
         "date": book_date,
         "venueId": "",
@@ -64,11 +64,11 @@ if __name__ == "__main__":
 
     # warm up
     session = requests.Session()
-    probe_availability(book_date, 2, 5, "22:00 - 23:00", session)
+    probe_availability(book_date, 1, 1, "08:00 - 09:00", session)
 
     print("🔍 开始探测可预约状态...")
     while True:
-        found = probe_availability(book_date, 2, 5, "22:00 - 23:00", session)
+        found = probe_availability(book_date, 1, 1, "08:00 - 09:00", session)
         if found:
             print("🚀 开始发送 POST 请求，连续发送 20 次")
             for i in range(1, 21):
